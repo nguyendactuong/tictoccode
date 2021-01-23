@@ -76,4 +76,5 @@ if __name__ =="__main__":
                 current_player = player_2
             elif current_player == player_2:
                 current_player = player_1
-        print("Winner is Player", current_player)
+        print ("Winner is Player", current_player)
+            if is_draw()
