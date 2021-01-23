@@ -43,14 +43,23 @@ if __name__ =="__main__":
         print("Welcome to Tic Tac Toe")
 
         print("Choose player, typy X or O")
-        player_1 = input().upper()
 
-        if player_1 == "X":
-            player_2 = "O"
-            current_player = player_1
-        elif player_1 == "O":
-            player_2 = "X"
-            current_player = player_2
+        while True:
+            player_1 = input().upper()
+
+            if player_1 == "X":
+                player_2 = "O"
+                current_player = player_1
+                break
+
+            elif player_1 == "O":
+                player_2 = "X"
+                current_player = player_2
+                break
+
+            else :
+                print("Please choose again")
+
 
         print("player_1:",player_1)
         print("player_2:",player_2)
@@ -63,11 +72,26 @@ if __name__ =="__main__":
         while True :
             print("Player", current_player, "turn:")
 
-            move = int(input())
+            try :
+                move = int(input())
+            except Exception as e:
 
-            board[move - 1 ] = current_player
+                print("Choose 1 - 9 for each turn")
+
+                print_board(board)
+                continue
+
+            if move >= 1 and move <= 9 :
+                board[move - 1 ] = current_player
+
+            else :
+                print("please choose again")
+                continue
+
 
             print_board(board)
+
+
 
             if not game_continue(board):
                 break
@@ -76,5 +100,7 @@ if __name__ =="__main__":
                 current_player = player_2
             elif current_player == player_2:
                 current_player = player_1
-        print ("Winner is Player", current_player)
-            if is_draw()
+        if is_draw(board):
+            print("draw")
+        else :
+            print("Winner is Player", current_player)
