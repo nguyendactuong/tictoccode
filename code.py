@@ -1,106 +1,180 @@
+import math
+
+
 def print_board(board):
-    #Hien thi board len man hinh
-    board_format = ""
+    board_format =" "
+
     for i in range(0, len(board)):
-        if i % 3 == 0:
+        if i % (math.sqrt(len(board))) == 0:
             board_format = board_format + "\n"
-        board_format = board_format + board[i] + "|"
+        board_format = board_format + prepend_zeroes(board[i],2) +"|"
+        #board_format = board_format + board[i] +"|"
+
     print(board_format)
-    #ket thuc hien thi
-def row(board,start, mark):
-    #1,4,7
 
-    return board[start] == mark and board[start + 1] == mark and board[start + 2] == mark
 
-def column(board,start, mark):
-    #1,2,3
-    return board[start] == mark and board[start + 3] == mark and board[start + 6] == mark
+def row(board, start, mark):
+
+    count = 1
+    for i in range(1, int(math.sqrt(len(board)))):
+        if board[start + i] == mark and board[start + i] == board[start + i - 1]:
+            count += 1
+    return count == math.sqrt(len(board))
+
+def column(board, start, mark):
+
+    count = 1
+    for i in range(1, int(math.sqrt(len(board)))):
+
+        if  board[start + i * int(math.sqrt(len(board)))] == mark and board[start + i * int(math.sqrt(len(board)))] == board[start + (i - 1) * int(math.sqrt(len(board)))]:
+            count += 1
+
+
+
+    return count == math.sqrt(len(board))
+
 def diagonal_1(board, start, mark):
-    #1, 3
-    return board[start] == mark and board[start + 4] == mark and board[start + 8] == mark
-def diagonal_2(board, start, mark):
-    return board[start] == mark and board[start + 2] == mark and board[start + 4] == mark
 
+    count = 1
+    for i in range(1, int(math.sqrt(len(board)))):
+        if board[start + i*(int(math.sqrt(len(board))+1))] == mark and board[start + i*(int(math.sqrt(len(board)))+1)] == board[start + (i-1)*(int(math.sqrt(len(board))+1))]:
+            count += 1
+    return count == math.sqrt(len(board))
+
+def diagonal_2(board, start, mark):
+
+    count = 1
+    for i in range(1, int(math.sqrt(len(board)))):
+
+        if  board[(start + i * (int(math.sqrt(len(board)))-1))] == mark and board[(start + i * (int(math.sqrt(len(board)))-1))] == board[start + (i-1) * (int(math.sqrt(len(board)))-1)]:
+            count += 1
+    return count == math.sqrt(len(board))
 def is_draw(board):
-        for mark in board:
-            if mark != "X" and mark != "O":
-                return False
-        return True
+    for i in range(0, len(board)):
+        if board[i] != "O" and board[i] != "X":
+            return False
+    return True
 
 def game_continue(board):
-    for mark in ["O", "X"]:
-        if row(board, 0, mark) or row(board, 3, mark) or row(board, 6,mark):
+    for mark in ["O","X"]:
+        for i in range(0, int(math.sqrt(len(board)))):
+            if row(board, i * int(math.sqrt(len(board))) ,mark) :
+                return False
+            if column(board, i , mark) :
+                return False
+        if diagonal_1 (board, 0 , mark):
+
             return False
-        if column(board, 0, mark) or column(board, 1, mark) or column(board, 2,mark):
+        if diagonal_2 (board, int(math.sqrt(len(board))) - 1 , mark):
             return False
-        if diagonal_1(board, 0, mark) or diagonal_2(board, 2, mark):
-            return False
-    if is_draw(board):
-        return False
-
-    return True
-if __name__ =="__main__":
-        print("Welcome to Tic Tac Toe")
-
-        print("Choose player, typy X or O")
-
-        while True:
-            player_1 = input().upper()
-
-            if player_1 == "X":
-                player_2 = "O"
-                current_player = player_1
-                break
-
-            elif player_1 == "O":
-                player_2 = "X"
-                current_player = player_2
-                break
-
-            else :
-                print("Please choose again")
 
 
-        print("player_1:",player_1)
-        print("player_2:",player_2)
+    return not is_draw(board) # return True
 
-        board = [" "] * 9
-        for i in range(0,9):
-            board[i]  = str(i + 1)
-        print_board(board)
-        print("Type from 1 - 9 to mark your move")
-        while True :
-            print("Player", current_player, "turn:")
+def prepend_zeroes(num,digit):
 
-            try :
-                move = int(input())
-            except Exception as e:
 
-                print("Choose 1 - 9 for each turn")
+     if digit == len(num):
+         return num
+     if digit >= len(num):
+         a = digit - len(num)
+         for i in range (0, a ):
+             num = " " + num
+         return num
 
-                print_board(board)
-                continue
 
-            if move >= 1 and move <= 9 :
-                board[move - 1 ] = current_player
+if __name__ == "__main__" :
 
-            else :
-                print("please choose again")
-                continue
+    #tạo 2 người chơi, tại dòng
 
+    print("Welcome to Tic Tac Toe")
+    print("Choose player, type X or O \nChoose X if you want go first")
+    """Get Player """
+
+    while True:
+        player_1= input().upper()
+        if player_1 == "X":
+            player_2 = "O"
+            current_player = player_1
+            break
+        elif player_1== "O":
+            player_2 = "X"
+            current_player = player_2
+            break
+        else:
+            print("Please Choose Again !!!")
+            continue
+
+    print("Player 1 : ", player_1)
+    print("Player 2 : ", player_2)
+
+    #Nhập và Hiển thị board lên màn hình
+    print("ENTER YOUR SIZE ")
+
+    size = int(input())
+    board = [" "] *size *size
+
+    #tạo số hiển thị trên board
+
+    for i in range(0, len(board)):
+        board[i] = str(i+1)
+
+
+
+    print_board(board)
+
+    print("\nType from 1-"+ str(len(board)) +" to mark your move\n")
+
+    print_board(board)
+
+    while game_continue(board):
+
+        print("Player",current_player,"turn :")
+        try :
+            move = int(input())
+        except Exception as e:
+
+            print("Choose 1 - "+ str(len(board)) +" for each turn")
 
             print_board(board)
+            continue
+
+
+        if move >=1 and move <= len(board) :
+            if board[move - 1] == "O" or board[move -1] == "X":
+
+                print("Your place had been chosen")
+                print("Pls , choose again !")
+
+                print_board(board)
+
+                continue
+            board[move - 1] = current_player
+
+        else:
+            print("Eror, Try Again!!")
+            print_board(board)
+            continue
 
 
 
-            if not game_continue(board):
-                break
 
-            if current_player == player_1:
-                current_player = player_2
-            elif current_player == player_2:
-                current_player = player_1
-        if is_draw(board):
-            print("draw")
-        else :
-            print("Winner is Player", current_player)
+        print(move)
+        # hien thi bảng để add số vào vị trí :
+
+        print_board(board)
+
+        if not game_continue(board):
+            break
+
+        #luân phiên 2 ng chơi
+        if current_player == player_1:
+            current_player = player_2
+        elif current_player == player_2:
+            current_player = player_1
+
+        #trường hợp - thắng/thua/hòa -
+    if is_draw(board):
+        print("\nDRAW")
+    else:
+        print("\nWinner is : ",current_player)
